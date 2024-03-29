@@ -19,5 +19,8 @@
   },
   "engines": {
     "node": "18.x"
+  },
+  "dependencies": {
+    "mongoose": "^8.2.4"
   }
 }
