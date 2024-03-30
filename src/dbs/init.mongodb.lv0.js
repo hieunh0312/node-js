@@ -4,15 +4,14 @@ const mongoose = require("mongoose");
 
 const CONNECT_STRING = "mongodb://localhost:3500";
 
+// Connect to MongoDB using Mongoose
 mongoose
-  .connect(CONNECT_STRING)
-  .then((_) => console.log("Connected MongoDB"))
-  .catch((err) => console.error(err));
-
-// debug
-if (1 === 1) {
-  mongoose.set("debug", true);
-  mongoose.set("debug", { color: true });
-}
+  .connect("mongodb://localhost")
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((error) => {
+    console.error("Error connecting to MongoDB:", error);
+  });
 
 module.exports = mongoose;
