@@ -5,6 +5,15 @@ const ROLE_SHOP = {
   EDITOR: "EDITOR"
 };
 
+const PERMISSION = {
+  DEFAULT: "0000",
+  1: "1111",
+  2: "2222"
+};
+const PERMISSIONS = [PERMISSION.DEFAULT, PERMISSION[1], PERMISSION[2]];
+
 module.exports = {
-  ROLE_SHOP
+  ROLE_SHOP,
+  PERMISSION,
+  PERMISSIONS
 };

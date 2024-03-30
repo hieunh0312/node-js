@@ -79,8 +79,6 @@ class AccessService {
           privateKey
         );
 
-        console.log("🚀 ~ AccessService ~ signUp ~ tokens:", tokens);
-
         return {
           code: 201,
           metadata: {
@@ -98,6 +96,7 @@ class AccessService {
         metadata: null
       };
     } catch (error) {
+      console.log("🚀 ~ AccessService ~ signUp ~ error:", error);
       return {
         code: "xxx",
         message: error.message,
