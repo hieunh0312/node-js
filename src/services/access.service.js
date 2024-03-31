@@ -56,6 +56,23 @@ class AccessService {
         throw new BadRequestError("Key store error");
       }
 
+      // created token pair
+
+      // Example: 1
+      // const publicKeyObject = crypto.createPublicKey(keyStore);
+      // const tokens = await createTokenPair(
+      //   { userId: newShop._id, email },
+      //   publicKeyObject,
+      //   privateKey
+      // );
+
+      // Example: 2
+      const tokens = await createTokenPair(
+        { userId: newShop._id, email },
+        publicKey,
+        privateKey
+      );
+
       return {
         code: 201,
         metadata: {
