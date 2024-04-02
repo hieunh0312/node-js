@@ -10,9 +10,14 @@ const { ROLE_SHOP } = require("../constants");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const { BadRequestError, AuthFailureError } = require("../core/error.response");
-const { findByEmail } = require("./shop.service");
+const ShopService = require("./shop.service");
 
 class AccessService {
+  static logout = async (keyStore) => {
+    const delKey = await KeyTokenServices.removeKeyById(keyStore._id);
+    return delKey;
+  };
+
   static async login({ email, password, refreshToken = null }) {
     /**
      * 1 - Check email
@@ -23,12 +28,11 @@ class AccessService {
      */
 
     // 1.
-    const foundShop = await findByEmail({ email });
+    const foundShop = await ShopService.findByEmail({ email });
     if (!foundShop) throw new BadRequestError("Shop not found!");
 
     // 2.
     const match = bcrypt.compare(password, foundShop.password);
-    console.log("🚀 ~ AccessService ~ login ~ match:", match);
     if (!match) throw new AuthFailureError("Authentication error");
 
     // 3.

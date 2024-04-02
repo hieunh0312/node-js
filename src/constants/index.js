@@ -12,8 +12,15 @@ const PERMISSION = {
 };
 const PERMISSIONS = [PERMISSION.DEFAULT, PERMISSION[1], PERMISSION[2]];
 
+const HEADER = {
+  API_KEY: "x-api-key",
+  CLIENT_ID: "x-client-id",
+  AUTHORIZATION: "authorization"
+};
+
 module.exports = {
-  ROLE_SHOP,
+  HEADER,
   PERMISSION,
-  PERMISSIONS
+  PERMISSIONS,
+  ROLE_SHOP
 };
