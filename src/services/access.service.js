@@ -7,12 +7,65 @@ const crypto = require("node:crypto");
 const shopModel = require("../models/shop.model");
 const KeyTokenServices = require("./keyToken.service");
 const { ROLE_SHOP } = require("../constants");
-const { createTokenPair } = require("../auth/authUtils");
+const { createTokenPair, verifyJWT } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
-const { BadRequestError, AuthFailureError } = require("../core/error.response");
+const {
+  BadRequestError,
+  AuthFailureError,
+  ForbiddenError
+} = require("../core/error.response");
 const ShopService = require("./shop.service");
 
 class AccessService {
+  static handlerRefreshToken = async (refreshToken) => {
+    /**
+     *  Check this token used
+     */
+    const foundToken =
+      await KeyTokenServices.findByRefreshTokenUsed(refreshToken);
+    if (foundToken) {
+      // decode xem user la ai
+      const { userId } = await verifyJWT(refreshToken, foundToken.privateKey);
+
+      await KeyTokenServices.deleteKeyById(userId);
+      throw new ForbiddenError("Something went wrong! Please login again");
+    }
+
+    const holderToken = await KeyTokenServices.findByRefreshToken(refreshToken);
+    if (!holderToken) throw new AuthFailureError("Shop not registered");
+
+    // Verify token
+    const { userId, email } = await verifyJWT(
+      refreshToken,
+      holderToken.privateKey
+    );
+
+    // Check userId
+    const foundShop = await ShopService.findByEmail({ email });
+    if (!foundShop) throw new AuthFailureError("Shop not registered");
+
+    // Create new tokens
+    const tokens = await createTokenPair(
+      { userId, email },
+      holderToken.publicKey,
+      holderToken.privateKey
+    );
+
+    await holderToken.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken
+      },
+      $addToSet: {
+        refreshTokenUsed: refreshToken
+      }
+    });
+
+    return {
+      user: { userId, email },
+      tokens
+    };
+  };
+
   static logout = async (keyStore) => {
     const delKey = await KeyTokenServices.removeKeyById(keyStore._id);
     return delKey;
@@ -32,7 +85,7 @@ class AccessService {
     if (!foundShop) throw new BadRequestError("Shop not found!");
 
     // 2.
-    const match = bcrypt.compare(password, foundShop.password);
+    const match = await bcrypt.compare(password, foundShop.password);
     if (!match) throw new AuthFailureError("Authentication error");
 
     // 3.
@@ -107,7 +160,6 @@ class AccessService {
       // Example: 2
       const publicKey = crypto.randomBytes(64).toString("hex");
       const privateKey = crypto.randomBytes(64).toString("hex");
-      console.log("zzzz");
 
       const keyStore = await KeyTokenServices.createKeyToken({
         userId: newShop._id,

@@ -4,7 +4,7 @@ const JWT = require("jsonwebtoken");
 const { asyncHandler } = require("../helpers/asyncHandler");
 const { HEADER } = require("../constants");
 const { AuthFailureError, NotFoundError } = require("../core/error.response");
-const KeyTokenService = require("../services/keyToken.service");
+const KeyTokenServices = require("../services/keyToken.service");
 
 const createTokenPair = async (payload, publicKey, privateKey) => {
   try {
@@ -47,7 +47,7 @@ const authentication = asyncHandler(async (req, res, next) => {
   if (!userId) throw new AuthFailureError("Invalid request");
 
   // 2.
-  const keyStore = await KeyTokenService.findByUserId(userId);
+  const keyStore = await KeyTokenServices.findByUserId(userId);
   if (!keyStore) throw new NotFoundError("Not found KeyStore");
 
   // 3.
@@ -66,7 +66,12 @@ const authentication = asyncHandler(async (req, res, next) => {
   }
 });
 
+const verifyJWT = async (token, keySecret) => {
+  return await JWT.verify(token, keySecret);
+};
+
 module.exports = {
   createTokenPair,
-  authentication
+  authentication,
+  verifyJWT
 };
