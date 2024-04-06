@@ -53,7 +53,8 @@ const clothingSchema = new Schema(
       required: true
     },
     size: String,
-    material: String
+    material: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" }
   },
   {
     collection: CLOTHING_COLLECTION_NAME,
@@ -66,12 +67,13 @@ const ELECTRONIC_DOCUMENT_NAME = "Electronic";
 const ELECTRONIC_COLLECTION_NAME = "Electronics";
 const electronicSchema = new Schema(
   {
-    brand: {
+    manufacturer: {
       type: String,
       required: true
     },
-    size: String,
-    material: String
+    model: String,
+    color: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" }
   },
   {
     collection: ELECTRONIC_COLLECTION_NAME,
