@@ -17,6 +17,45 @@ const {
 const ShopService = require("./shop.service");
 
 class AccessService {
+  static handlerRefreshTokenV2 = async ({ refreshToken, user, keyStore }) => {
+    const { userId, email } = user;
+
+    const isExistRefreshToken =
+      keyStore.refreshTokenUsed.includes(refreshToken);
+    if (isExistRefreshToken) {
+      await KeyTokenServices.deleteKeyById(userId);
+      throw new ForbiddenError("Something went wrong! Please login again");
+    }
+
+    if (keyStore.refreshToken !== refreshToken)
+      throw new AuthFailureError("Shop not registered");
+
+    // Check userId
+    const foundShop = await ShopService.findByEmail({ email });
+    if (!foundShop) throw new AuthFailureError("Shop not registered");
+
+    // Create new tokens
+    const tokens = await createTokenPair(
+      { userId, email },
+      keyStore.publicKey,
+      keyStore.privateKey
+    );
+
+    await keyStore.updateOne({
+      $set: {
+        refreshToken: tokens.refreshToken
+      },
+      $addToSet: {
+        refreshTokenUsed: refreshToken
+      }
+    });
+
+    return {
+      user,
+      tokens
+    };
+  };
+
   static handlerRefreshToken = async (refreshToken) => {
     /**
      *  Check this token used

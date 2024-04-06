@@ -15,7 +15,8 @@ const PERMISSIONS = [PERMISSION.DEFAULT, PERMISSION[1], PERMISSION[2]];
 const HEADER = {
   API_KEY: "x-api-key",
   CLIENT_ID: "x-client-id",
-  AUTHORIZATION: "authorization"
+  AUTHORIZATION: "authorization",
+  REFRESH_TOKEN: "x-rtoken-id"
 };
 
 module.exports = {
