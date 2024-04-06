@@ -15,10 +15,6 @@ router.use(apiKey);
 router.use(permission(PERMISSION.DEFAULT));
 
 router.use("/v1/api", require("./access"));
-// router.get("/", (req, res, next) => {
-//   return res.status(200).json({
-//     message: "Hello World",
-//   });
-// });
+router.use("/v1/api/product", require("./product"));
 
 module.exports = router;
