@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const { PRODUCT_TYPE } = require("../constants/product");
 
 const PRODUCT_DOCUMENT_NAME = "Product";
 const PRODUCT_COLLECTION_NAME = "Products";
@@ -27,7 +28,11 @@ const productSchema = new Schema(
     product_type: {
       type: String,
       required: true,
-      enum: ["Electronics", "Clothing", "Furniture"]
+      enum: [
+        PRODUCT_TYPE.ELECTRONICS,
+        PRODUCT_TYPE.CLOTHING,
+        PRODUCT_TYPE.FURNITURE
+      ]
     },
     product_shop: {
       type: Schema.Types.ObjectId,
@@ -81,8 +86,28 @@ const electronicSchema = new Schema(
   }
 );
 
+// Define the product type = furniture
+const FURNITURE_DOCUMENT_NAME = "Furniture";
+const FURNITURE_COLLECTION_NAME = "Furnitures";
+const furnitureSchema = new Schema(
+  {
+    brand: {
+      type: String,
+      required: true
+    },
+    size: String,
+    material: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" }
+  },
+  {
+    collection: FURNITURE_COLLECTION_NAME,
+    timestamps: true
+  }
+);
+
 module.exports = {
   product: model(PRODUCT_DOCUMENT_NAME, productSchema),
   clothing: model(CLOTHING_DOCUMENT_NAME, clothingSchema),
-  electronic: model(ELECTRONIC_DOCUMENT_NAME, electronicSchema)
+  electronic: model(ELECTRONIC_DOCUMENT_NAME, electronicSchema),
+  furniture: model(FURNITURE_DOCUMENT_NAME, furnitureSchema)
 };
