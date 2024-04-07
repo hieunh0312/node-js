@@ -1,0 +1,15 @@
+/product/create-product
+# Type = Clothing
+{
+  "product_name": "Băng Quấn Bảo Vệ",
+  "product_description": "Băng Quấn Bảo Vệ Description",
+  "product_price": 1234.000,
+  "product_type": "Clothing",
+  "product_thumb": "product_thumb",
+  "product_quantity": 5,
+  "product_attributes": {
+      "brand": "Viet Nam",
+      "size": "XL",
+      "material": "Thun"
+  }
+}
