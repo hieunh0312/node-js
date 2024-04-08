@@ -56,6 +56,9 @@ const discountSchema = new Schema(
       type: Number,
       require: true
     },
+    discount_max_value: {
+      type: Number
+    },
     discount_shopId: {
       type: Schema.Types.ObjectId,
       ref: "Shop"
