@@ -104,6 +104,10 @@ const updateProductById = async ({
   });
 };
 
+const createProduct = async ({ payload, model }) => {
+  return await model.create(payload);
+};
+
 module.exports = {
   findAllDraftsForShop,
   findAllPublishForShop,
@@ -112,5 +116,6 @@ module.exports = {
   searchProductByUser,
   getAllProducts,
   getProduct,
-  updateProductById
+  updateProductById,
+  createProduct
 };

@@ -16,8 +16,10 @@ const {
   searchProductByUser,
   getAllProducts,
   getProduct,
-  updateProductById
+  updateProductById,
+  createProduct
 } = require("../models/repositories/product.repo");
+const { insertInventory } = require("../models/repositories/inventory.repo");
 const { updateNestedObject } = require("../utils");
 
 // Define Factory class to create product
@@ -118,7 +120,20 @@ class Product {
 
   // Create new product
   async createProduct(product_id) {
-    return await product.create({ ...this, _id: product_id });
+    const newProduct = await createProduct({
+      payload: { ...this, _id: product_id },
+      model: product
+    });
+
+    if (newProduct) {
+      await insertInventory({
+        productId: newProduct._id,
+        shopId: this.product_shop,
+        stock: this.product_quantity
+      });
+    }
+
+    return newProduct;
   }
 
   async updateProduct(productId, payload) {
@@ -129,9 +144,12 @@ class Product {
 // Define sub-class for different product types Clothing
 class Clothing extends Product {
   async createProduct() {
-    const newClothing = await clothing.create({
-      ...this.product_attributes,
-      product_shop: this.product_shop
+    const newClothing = await createProduct({
+      payload: {
+        ...this.product_attributes,
+        product_shop: this.product_shop
+      },
+      model: clothing
     });
     if (!newClothing) throw new BadRequestError("Create new Clothing error");
 
@@ -167,9 +185,12 @@ class Clothing extends Product {
 // Define sub-class for different product types Electronics
 class Electronics extends Product {
   async createProduct() {
-    const newElectronic = await electronic.create({
-      ...this.product_attributes,
-      product_shop: this.product_shop
+    const newElectronic = await createProduct({
+      payload: {
+        ...this.product_attributes,
+        product_shop: this.product_shop
+      },
+      model: electronic
     });
     if (!newElectronic)
       throw new BadRequestError("Create new Electronic error");
@@ -184,9 +205,12 @@ class Electronics extends Product {
 // Define sub-class for different product types Furniture
 class Furniture extends Product {
   async createProduct() {
-    const newFurniture = await furniture.create({
-      ...this.product_attributes,
-      product_shop: this.product_shop
+    const newFurniture = await createProduct({
+      payload: {
+        ...this.product_attributes,
+        product_shop: this.product_shop
+      },
+      model: furniture
     });
     if (!newFurniture) throw new BadRequestError("Create new Furniture error");
 
