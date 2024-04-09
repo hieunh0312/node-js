@@ -1,20 +1,11 @@
 "use strict";
 
 const { SORT_BY } = require("../../constants/sort");
-const {
-  convertToObjectIdMongodb,
-  unGetSelectData,
-  getSelectData
-} = require("../../utils");
+const { unGetSelectData, getSelectData } = require("../../utils");
 const discountModel = require("../discount.model");
 
-const findDiscount = async ({ code, shopId }) => {
-  return await discountModel
-    .findOne({
-      discount_code: code,
-      discount_shopId: convertToObjectIdMongodb(shopId)
-    })
-    .lean();
+const findDiscount = async (filter) => {
+  return await discountModel.findOne(filter).lean();
 };
 
 const findAllDiscountCodesUnselect = async ({
@@ -63,5 +54,6 @@ const findAllDiscountCodesSelect = async ({
 
 module.exports = {
   findDiscount,
-  findAllDiscountCodesUnselect
+  findAllDiscountCodesUnselect,
+  findAllDiscountCodesSelect
 };
