@@ -8,7 +8,11 @@ const {
 } = require("../../models/product.model");
 
 const { Types } = require("mongoose");
-const { getSelectData, unGetSelectData } = require("../../utils");
+const {
+  getSelectData,
+  unGetSelectData,
+  convertToObjectIdMongodb
+} = require("../../utils");
 
 const queryProduct = async ({ query, limit, skip }) => {
   return await product
@@ -108,6 +112,10 @@ const createProduct = async ({ payload, model }) => {
   return await model.create(payload);
 };
 
+const getProductById = async (productId) => {
+  return await product.findOne({ _id: convertToObjectIdMongodb(productId) });
+};
+
 module.exports = {
   findAllDraftsForShop,
   findAllPublishForShop,
@@ -117,5 +125,6 @@ module.exports = {
   getAllProducts,
   getProduct,
   updateProductById,
-  createProduct
+  createProduct,
+  getProductById
 };

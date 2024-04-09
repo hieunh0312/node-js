@@ -8,7 +8,7 @@ const COLLECTION_NAME = "carts";
 
 var cartSchema = new Schema(
   {
-    cart_states: {
+    cart_state: {
       type: String,
       required: true,
       enum: CART_STATUS_LIST
